@@ -186,7 +186,7 @@ export const loadDefaults = ($el) => {
   const defaults = {};
   if ($el) {
     options.elements.forEach((o) => {
-      defaults[o.name] = $el.find(o.defaultSelector);
+      defaults[o.name] = $el.querySelector(o.defaultSelector);
     });
   }
   options.values.forEach((o) => {

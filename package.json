@@ -35,7 +35,7 @@
       "js",
       "json"
     ],
-    "testDirectoryName": "test",
+    "testDirectoryName": "mytest",
     "unmockedModulePathPatterns": [
       "constants",
       "zoomer",

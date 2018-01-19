@@ -1,16 +1,16 @@
 import $ from 'jquery';
 
-import Zoomer from './Zoomer';
+import Zoomer from './zoomer';
 import { CLASS_NAMES, ERRORS, EVENTS } from './constants';
 import { loadDefaults } from './options';
-import { exists, round } from './utils';
+import { exists, round, extend } from './utils';
 
 class Cropit {
   constructor(jQuery, element, options) {
-    this.$el = $(element);
+    this.$el = document.querySelector(element);
 
     const defaults = loadDefaults(this.$el);
-    this.options = $.extend({}, defaults, options);
+    this.options = extend({}, defaults, options);
 
     this.init();
   }
@@ -24,13 +24,19 @@ class Cropit {
       this.onImageError.call(this, ERRORS.IMAGE_FAILED_TO_LOAD);
     };
 
-    this.$preview = this.options.$preview.css('position', 'relative');
-    this.$fileInput = this.options.$fileInput.attr({ accept: 'image/*' });
-    this.$zoomSlider = this.options.$zoomSlider.attr({ min: 0, max: 1, step: 0.01 });
+    this.$preview = this.options.$preview;
+    this.$fileInput = this.options.$fileInput;
+    this.$zoomSlider = this.options.$zoomSlider;
+
+    this.$preview.style.position = 'relative';
+    this.$fileInput.setAttribute('accept', 'image/*');
+    this.$zoomSlider.setAttribute('min', 0);
+    this.$zoomSlider.setAttribute('max', 1);
+    this.$zoomSlider.setAttribute('step', 0.01);
 
     this.previewSize = {
-      width: this.options.width || this.$preview.innerWidth(),
-      height: this.options.height || this.$preview.innerHeight(),
+      width: this.options.width || this.$preview.clientWidth,
+      height: this.options.height || this.$preview.clientHeight,
     };
 
     this.$image = $('<img />')
@@ -515,7 +521,7 @@ class Cropit {
       originalSize: false,
       fillBg: '#fff',
     };
-    exportOptions = $.extend({}, exportDefaults, exportOptions);
+    exportOptions = extend({}, exportDefaults, exportOptions);
 
     const exportZoom = exportOptions.originalSize ? 1 / this.zoom : this.options.exportZoom;
 

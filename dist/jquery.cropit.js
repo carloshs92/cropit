@@ -172,9 +172,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	var _Zoomer = __webpack_require__(3);
+	var _zoomer = __webpack_require__(3);
 
-	var _Zoomer2 = _interopRequireDefault(_Zoomer);
+	var _zoomer2 = _interopRequireDefault(_zoomer);
 
 	var _constants = __webpack_require__(4);
 
@@ -189,7 +189,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.$el = (0, _jquery2['default'])(element);
 
 	    var defaults = (0, _options.loadDefaults)(this.$el);
-	    this.options = _jquery2['default'].extend({}, defaults, options);
+	    this.options = (0, _utils.extend)({}, defaults, options);
 
 	    this.init();
 	  }
@@ -268,7 +268,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.moveContinue = false;
 
-	      this.zoomer = new _Zoomer2['default']();
+	      this.zoomer = new _zoomer2['default']();
 
 	      if (this.options.allowDragNDrop) {
 	        _jquery2['default'].event.props.push('dataTransfer');
@@ -672,7 +672,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        originalSize: false,
 	        fillBg: '#fff'
 	      };
-	      exportOptions = _jquery2['default'].extend({}, exportDefaults, exportOptions);
+	      exportOptions = (0, _utils.extend)({}, exportDefaults, exportOptions);
 
 	      var exportZoom = exportOptions.originalSize ? 1 / this.zoom : this.options.exportZoom;
 
@@ -1189,17 +1189,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, '__esModule', {
-	  value: true
+	    value: true
 	});
 	var exists = function exists(v) {
-	  return typeof v !== 'undefined';
+	    return typeof v !== 'undefined';
 	};
 
 	exports.exists = exists;
 	var round = function round(x) {
-	  return +(Math.round(x * 100) + 'e-2');
+	    return +(Math.round(x * 100) + 'e-2');
 	};
+
 	exports.round = round;
+	var extend = function extend() {
+	    var extended = {};
+	    for (var key in arguments) {
+	        var argument = arguments[key];
+	        for (var prop in argument) {
+	            if (Object.prototype.hasOwnProperty.call(argument, prop)) {
+	                extended[prop] = argument[prop];
+	            }
+	        }
+	    }
+
+	    return extended;
+	};
+	exports.extend = extend;
 
 /***/ }
 /******/ ])

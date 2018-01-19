@@ -55,7 +55,7 @@ describe('Cropit', () => {
       cropit = newCropit();
     });
 
-    it('sets test image source', () => {
+    it('sets mytest image source', () => {
       expect(cropit.preImage.src).not.toBe(IMAGE_DATA);
 
       cropit.loadImage(IMAGE_DATA);

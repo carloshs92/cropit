@@ -15,8 +15,8 @@ import '../src/plugin';
 const IMAGE_DATA = 'data:image/png;base64,image-data...';
 
 const FIXTURES = {
-  BASIC: fs.readFileSync('./test/fixtures/basic.html').toString(),
-  IMAGE_BACKGROUND: fs.readFileSync('./test/fixtures/image-background.html').toString(),
+  BASIC: fs.readFileSync('./mytest/fixtures/basic.html').toString(),
+  IMAGE_BACKGROUND: fs.readFileSync('./mytest/fixtures/image-background.html').toString(),
 };
 
 let $el = null;
