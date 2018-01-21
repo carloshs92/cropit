@@ -39,61 +39,57 @@ class Cropit {
       height: this.options.height || this.$preview.clientHeight,
     };
 
-    this.$image = $('<img />')
-      .addClass(CLASS_NAMES.PREVIEW_IMAGE)
-      .attr('alt', '')
-      .css({
-        transformOrigin: 'top left',
-        webkitTransformOrigin: 'top left',
-        willChange: 'transform',
-      });
-    this.$imageContainer = $('<div />')
-      .addClass(CLASS_NAMES.PREVIEW_IMAGE_CONTAINER)
-      .css({
-        position: 'absolute',
-        overflow: 'hidden',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-      })
-      .append(this.$image);
-    this.$preview.append(this.$imageContainer);
+    this.$image = document.createElement("img");
+    this.$image.classList.add(CLASS_NAMES.PREVIEW_IMAGE);
+    this.$image.setAttribute('alt', '');
+    this.$image.style.transformOrigin = 'top left';
+    this.$image.style.webkitTransformOrigin = 'top left';
+    this.$image.style.willChange = 'transform';
+
+    this.$imageContainer = document.createElement("div");
+    this.$imageContainer.classList.add(CLASS_NAMES.PREVIEW_IMAGE_CONTAINER);
+    this.$imageContainer.style.position = 'absolute';
+    this.$imageContainer.style.overflow = 'hidden';
+    this.$imageContainer.style.left = 0;
+    this.$imageContainer.style.top = 0;
+    this.$imageContainer.style.width = '100%';
+    this.$imageContainer.style.height = '100%';
+    this.$imageContainer.appendChild(this.$image);
+
+    this.$preview.appendChild(this.$imageContainer);
 
     if (this.options.imageBackground) {
-      if ($.isArray(this.options.imageBackgroundBorderWidth)) {
+      if (Array.isArray(this.options.imageBackgroundBorderWidth)) {
         this.bgBorderWidthArray = this.options.imageBackgroundBorderWidth;
       }
       else {
         this.bgBorderWidthArray = [0, 1, 2, 3].map(() => this.options.imageBackgroundBorderWidth);
       }
 
-      this.$bg = $('<img />')
-        .addClass(CLASS_NAMES.PREVIEW_BACKGROUND)
-        .attr('alt', '')
-        .css({
-          position: 'relative',
-          left: this.bgBorderWidthArray[3],
-          top: this.bgBorderWidthArray[0],
-          transformOrigin: 'top left',
-          webkitTransformOrigin: 'top left',
-          willChange: 'transform',
-        });
-      this.$bgContainer = $('<div />')
-        .addClass(CLASS_NAMES.PREVIEW_BACKGROUND_CONTAINER)
-        .css({
-          position: 'absolute',
-          zIndex: 0,
-          top: -this.bgBorderWidthArray[0],
-          right: -this.bgBorderWidthArray[1],
-          bottom: -this.bgBorderWidthArray[2],
-          left: -this.bgBorderWidthArray[3],
-        })
-        .append(this.$bg);
+      this.$bg = document.createElement("img");
+      this.$bg.classList.add(CLASS_NAMES.PREVIEW_BACKGROUND);
+      this.$bg.setAttribute('alt', '');
+      this.$bg.style.position = 'relative';
+      this.$bg.style.left = this.bgBorderWidthArray[3];
+      this.$bg.style.top = this.bgBorderWidthArray[0];
+      this.$bg.style.transformOrigin = 'top left';
+      this.$bg.style.webkitTransformOrigin = 'top left';
+      this.$bg.style.willChange = 'transform';
+
+      this.$bgContainer = document.createElement("div");
+      this.$bgContainer.classList.add(CLASS_NAMES.PREVIEW_BACKGROUND_CONTAINER);
+      this.$bgContainer.style.position = 'absolute';
+      this.$bgContainer.style.zIndex = 0;
+      this.$bgContainer.style.top = -this.bgBorderWidthArray[0];
+      this.$bgContainer.style.right = -this.bgBorderWidthArray[1];
+      this.$bgContainer.style.bottom = -this.bgBorderWidthArray[2];
+      this.$bgContainer.style.left = -this.bgBorderWidthArray[3];
+      this.$bgContainer.appendChild(this.$bg);
+
       if (this.bgBorderWidthArray[0] > 0) {
-        this.$bgContainer.css('overflow', 'hidden');
+        this.$bgContainer.style.overflow =  'hidden';
       }
-      this.$preview.prepend(this.$bgContainer);
+      this.$preview.appendChild(this.$bgContainer);
     }
 
     this.initialZoom = this.options.initialZoom;
@@ -104,10 +100,6 @@ class Cropit {
 
     this.zoomer = new Zoomer();
 
-    if (this.options.allowDragNDrop) {
-      $.event.props.push('dataTransfer');
-    }
-
     this.bindListeners();
 
     if (this.options.imageState && this.options.imageState.src) {
@@ -116,28 +108,28 @@ class Cropit {
   }
 
   bindListeners() {
-    this.$fileInput.on('change.cropit', this.onFileChange.bind(this));
-    this.$imageContainer.on(EVENTS.PREVIEW, this.onPreviewEvent.bind(this));
-    this.$zoomSlider.on(EVENTS.ZOOM_INPUT, this.onZoomSliderChange.bind(this));
+    this.$fileInput.addEventListener('change.cropit', this.onFileChange.bind(this));
+    this.$imageContainer.addEventListener(EVENTS.PREVIEW, this.onPreviewEvent.bind(this));
+    this.$zoomSlider.addEventListener(EVENTS.ZOOM_INPUT, this.onZoomSliderChange.bind(this));
 
     if (this.options.allowDragNDrop) {
-      this.$imageContainer.on('dragover.cropit dragleave.cropit', this.onDragOver.bind(this));
-      this.$imageContainer.on('drop.cropit', this.onDrop.bind(this));
+      this.$imageContainer.addEventListener('dragover.cropit dragleave.cropit', this.onDragOver.bind(this));
+      this.$imageContainer.addEventListener('drop.cropit', this.onDrop.bind(this));
     }
   }
 
   unbindListeners() {
-    this.$fileInput.off('change.cropit');
-    this.$imageContainer.off(EVENTS.PREVIEW);
-    this.$imageContainer.off('dragover.cropit dragleave.cropit drop.cropit');
-    this.$zoomSlider.off(EVENTS.ZOOM_INPUT);
+    this.$fileInput.removeEventListener('change.cropit');
+    this.$imageContainer.removeEventListener(EVENTS.PREVIEW);
+    this.$imageContainer.removeEventListener('dragover.cropit dragleave.cropit drop.cropit');
+    this.$zoomSlider.removeEventListener(EVENTS.ZOOM_INPUT);
   }
 
   onFileChange(e) {
     this.options.onFileChange(e);
 
-    if (this.$fileInput.get(0).files) {
-      this.loadFile(this.$fileInput.get(0).files[0]);
+    if (this.$fileInput.files) {
+      this.loadFile(this.$fileInput.files[0]);
     }
   }
 
@@ -163,15 +155,15 @@ class Cropit {
 
   onDragOver(e) {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-    this.$preview.toggleClass(CLASS_NAMES.DRAG_HOVERED, e.type === 'dragover');
+    e.originalEvent.dataTransfer.dropEffect = 'copy';
+    this.$preview.classList.toggle(CLASS_NAMES.DRAG_HOVERED, e.type === 'dragover');
   }
 
   onDrop(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    const files = Array.prototype.slice.call(e.dataTransfer.files, 0);
+    const files = Array.prototype.slice.call(e.originalEvent.dataTransfer.files, 0);
     files.some((file) => {
       if (!file.type.match('image')) { return false; }
 
@@ -179,7 +171,7 @@ class Cropit {
       return true;
     });
 
-    this.$preview.removeClass(CLASS_NAMES.DRAG_HOVERED);
+    this.$preview.classList.remove(CLASS_NAMES.DRAG_HOVERED);
   }
 
   loadImage(imageSrc) {
@@ -235,10 +227,9 @@ class Cropit {
     }
 
     this.options.imageState = {};
-
-    this.$image.attr('src', this.image.src);
+    this.$image.setAttribute('src', this.image.src);
     if (this.options.imageBackground) {
-      this.$bg.attr('src', this.image.src);
+      this.$bg.setAttribute('src', this.image.src);
     }
 
     this.setImageLoadedClass();
@@ -254,20 +245,17 @@ class Cropit {
   }
 
   setImageLoadingClass() {
-    this.$preview
-      .removeClass(CLASS_NAMES.IMAGE_LOADED)
-      .addClass(CLASS_NAMES.IMAGE_LOADING);
+    this.$preview.classList.remove(CLASS_NAMES.IMAGE_LOADED);
+    this.$preview.classList.add(CLASS_NAMES.IMAGE_LOADING);
   }
 
   setImageLoadedClass() {
-    this.$preview
-      .removeClass(CLASS_NAMES.IMAGE_LOADING)
-      .addClass(CLASS_NAMES.IMAGE_LOADED);
+    this.$preview.classList.remove(CLASS_NAMES.IMAGE_LOADING);
+    this.$preview.classList.add(CLASS_NAMES.IMAGE_LOADED);
   }
 
   removeImageLoadingClass() {
-    this.$preview
-      .removeClass(CLASS_NAMES.IMAGE_LOADING);
+    this.$preview.classList.remove(CLASS_NAMES.IMAGE_LOADING);
   }
 
   getEventPosition(e) {
@@ -283,15 +271,15 @@ class Cropit {
     if (!this.imageLoaded) { return; }
 
     this.moveContinue = false;
-    this.$imageContainer.off(EVENTS.PREVIEW_MOVE);
+    this.$imageContainer.removeEventListener(EVENTS.PREVIEW_MOVE);
 
     if (e.type === 'mousedown' || e.type === 'touchstart') {
       this.origin = this.getEventPosition(e);
       this.moveContinue = true;
-      this.$imageContainer.on(EVENTS.PREVIEW_MOVE, this.onMove.bind(this));
+      this.$imageContainer.addEventListener(EVENTS.PREVIEW_MOVE, this.onMove.bind(this));
     }
     else {
-      $(document.body).focus();
+      document.body.focus();
     }
 
     e.stopPropagation();
@@ -373,12 +361,12 @@ class Cropit {
   }
 
   enableZoomSlider() {
-    this.$zoomSlider.removeAttr('disabled');
+    this.$zoomSlider.removeAttribute('disabled');
     this.options.onZoomEnabled();
   }
 
   disableZoomSlider() {
-    this.$zoomSlider.attr('disabled', true);
+    this.$zoomSlider.setAttribute('disabled', true);
     this.options.onZoomDisabled();
   }
 
@@ -530,12 +518,9 @@ class Cropit {
       height: this.zoom * exportZoom * this.image.height,
     };
 
-    const canvas = $('<canvas />')
-      .attr({
-        width: this.previewSize.width * exportZoom,
-        height: this.previewSize.height * exportZoom,
-      })
-      .get(0);
+    const canvas = document.createElement('canvas');
+    canvas.setAttribute('width', this.previewSize.width * exportZoom);
+    canvas.setAttribute('height', this.previewSize.height * exportZoom);
     const canvasContext = canvas.getContext('2d');
 
     if (exportOptions.type === 'image/jpeg') {
@@ -661,13 +646,13 @@ class Cropit {
   disable() {
     this.unbindListeners();
     this.disableZoomSlider();
-    this.$el.addClass(CLASS_NAMES.DISABLED);
+    this.$el.classList.add(CLASS_NAMES.DISABLED);
   }
 
   reenable() {
     this.bindListeners();
     this.enableZoomSlider();
-    this.$el.removeClass(CLASS_NAMES.DISABLED);
+    this.$el.classList.remove(CLASS_NAMES.DISABLED);
   }
 
   $(selector) {
